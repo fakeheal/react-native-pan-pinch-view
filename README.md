@@ -1,23 +1,97 @@
 # react-native-pan-pinch-view
+<a href="https://www.npmjs.com/package/react-native-pan-pinch-view">
+    <img alt="npm (scoped)" src="https://img.shields.io/npm/v/react-native-pan-pinch-view?style=flat">
+</a>
 
 A view component for React Native with pinch to zoom and drag to pan functionality.
 
-## Installation
+<img width="200" height="400" src="example.gif" alt="Demo of the example app">
+
+
+## 👋 Introduction
+
+Even though the demo shows the library used with images, it was initially designed to show `<View>`s representing blueprints of rooms. 
+
+- Pinch to zoom with two fingers
+- Drag one finger to pan
+- Keep content inside container boundaries
+- Configurable minimum and maximum scale
+
+Thanks to `react-native-reanimated` all animations are running on the UI thread, so no fps drops are experienced.
+
+> AFAIK, Expo users should be able to use it once Expo updates to`react-native-gesture-handler@2.3.1`.
+
+## 👀 Prerequisites
+
+This library uses `react-native-reanimated` v2 and the new API of `react-native-gesture-handler`.
+
+Before installing it, you need to install those two libraries and set them up in your project:
+
+- `react-native-reanimated`: [INSTALLATION](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
+- `react-native-gesture-handler`: [INSTALLATION](https://docs.swmansion.com/react-native-gesture-handler/docs/#installation)
+
+## ⚙️ Installation
 
 ```sh
 npm install react-native-pan-pinch-view
 ```
 
-## Usage
+## ✂️ Usage
 
 ```js
 import PanPinchView from "react-native-pan-pinch-view";
 
 // ...
 
-const result = await PanPinchView.multiply(3, 7);
+const CONTAINER = {
+  width: 300,
+  height: 300,
+};
+
+const CONTENT = {
+  width: 900,
+  height: 400,
+};
+// ...
+
+<PanPinchView
+  minScale={1}
+  initialScale={1}
+  containerDimensions={{
+    width: CONTAINER.width,
+    height: CONTAINER.height,
+  }}
+  contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
+>
+  <Image
+    style={[styles.image]}
+    source={require('./assets/photo.jpg')}
+  />
+</PanPinchView>
+
+// ...
+
+const styles = StyleSheet.create({
+  image: {
+    width: CONTENT.width,
+    height: CONTENT.height,
+  },
+});
+
 ```
 
+## ⚪ Props
+
+| Property            | Type     | Default                           | Description                                 |
+|---------------------|----------|-----------------------------------|---------------------------------------------|
+| containerDimensions | Object   | `{width: number, height:number}`  | Width and height of the viewable area.      |
+| contentDimensions   | Object   | `{width: number, height:number}`  | Width and height of the zoomable view.      |
+| minScale            | Number?  | `0.5`                             | Minimum value of scale.                     |
+| maxScale            | Number?  | `4`                               | Maximum value of scale.                     |
+| initialScale        | Number?  | `1`                               | Initial value of scale.                     |
+| shouldAdjustFocal   | Boolean? | `false`                           | Scale the view based on center of pinching. |
+
+You can also refer to the app inside `example/` for a running demo of this library.
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

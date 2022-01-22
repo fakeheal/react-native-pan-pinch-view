@@ -1,31 +1,54 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
+import { Image, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import PanPinchView from 'react-native-pan-pinch-view';
 
+const CONTENT = {
+  width: 150,
+  height: 100,
+};
+
+const CONTAINER = {
+  width: 300,
+  height: 300,
+};
+
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    PanPinchView.multiply(3, 7).then(setResult);
-  }, []);
-
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <SafeAreaView style={styles.screen}>
+      <StatusBar />
+      <View style={styles.container}>
+        <PanPinchView
+          shouldAdjustFocal={true}
+          minScale={1}
+          initialScale={1}
+          containerDimensions={{
+            width: CONTAINER.width,
+            height: CONTAINER.height,
+          }}
+          contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
+        >
+          <Image
+            style={[styles.image]}
+            source={require('./assets/photo.jpg')}
+          />
+        </PanPinchView>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: '#fff' },
   container: {
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderWidth: 1,
+    marginVertical: 80,
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  image: {
+    width: CONTENT.width,
+    height: CONTENT.height,
   },
 });
