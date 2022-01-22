@@ -1,6 +1,8 @@
 # OSX
 #
 .DS_Store
+package-lock.json
+.npmrc
 
 # XDE
 .expo/
@@ -14,7 +16,7 @@ jsconfig.json
 build/
 *.pbxuser
 !default.pbxuser
-*.mode1v3
+*.mode1v3p
 !default.mode1v3
 *.mode2v3
 !default.mode2v3
@@ -39,6 +41,8 @@ android.iml
 # Cocoapods
 #
 example/ios/Pods
+example/ios/Podfile.lock
+example/package-lock.json
 
 # node.js
 #

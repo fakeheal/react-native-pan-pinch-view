@@ -21,6 +21,12 @@ Thanks to `react-native-reanimated` all animations are running on the UI thread,
 
 > AFAIK, Expo users should be able to use it once Expo updates to`react-native-gesture-handler@2.3.1`.
 
+If you want to zoom in on images *exclusively*, in a gallery-like UI, I recommend these packages, rather than my library:
+
+- [`react-native-awesome-gallery`](https://github.com/Flair-Dev/react-native-awesome-gallery)
+- [`react-native-image-zoom`](https://github.com/likashefqet/react-native-image-zoom)
+
+
 ## 👀 Prerequisites
 
 This library uses `react-native-reanimated` v2 and the new API of `react-native-gesture-handler`.
