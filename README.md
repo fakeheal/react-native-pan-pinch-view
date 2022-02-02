@@ -5,7 +5,8 @@
 
 A view component for React Native with pinch to zoom and drag to pan functionality.
 
-<img width="200" height="400" src="example.gif" alt="Demo of the example app">
+<img width="200" height="400" src="ios.gif" alt="iOS Example App Gif">
+<img width="200" height="400" src="android.gif" alt="Android Example App Gif">
 
 
 ## 👋 Introduction
