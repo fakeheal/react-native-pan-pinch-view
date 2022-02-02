@@ -16,6 +16,7 @@ Even though the demo shows the library used with images, it was initially design
 - Drag one finger to pan
 - Keep content inside container boundaries
 - Configurable minimum and maximum scale
+- Methods for programmatically updating position and scale
 
 Thanks to `react-native-reanimated` all animations are running on the UI thread, so no fps drops are experienced.
 
@@ -33,8 +34,8 @@ This library uses `react-native-reanimated` v2 and the new API of `react-native-
 
 Before installing it, you need to install those two libraries and set them up in your project:
 
-- `react-native-reanimated`: [INSTALLATION](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
-- `react-native-gesture-handler`: [INSTALLATION](https://docs.swmansion.com/react-native-gesture-handler/docs/#installation)
+- `react-native-reanimated`: [Installation & Setup](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/installation)
+- `react-native-gesture-handler`: [Installation & Setup](https://docs.swmansion.com/react-native-gesture-handler/docs/#installation)
 
 ## ⚙️ Installation
 
@@ -96,8 +97,19 @@ const styles = StyleSheet.create({
 | maxScale            | Number?  | `4`                               | Maximum value of scale.                     |
 | initialScale        | Number?  | `1`                               | Initial value of scale.                     |
 
+## 🛠 Methods
+
+| Method         | Params                                  | Return | Description                                                                                  |
+|----------------|-----------------------------------------|--------|----------------------------------------------------------------------------------------------|
+| scaleTo        | value: number, animated: boolean        | void   | Sets sharedValue `scale` to  `value`,<br/> if `animated` is **true** uses `withTiming`       |
+| setContentSize | width: number, height: number           | void   | Updates sharedValue `contentSize` and overrides prop: `contentDimensions`                    |
+| translateTo    | x: number, y: number, animated: boolean | void   | Updates content `translateX` / `translateY`, <br>if `animated` is **true** uses `withTiming` |
+| setMinScale    | value: number                           | void   | Updates `minScale` value                                                                     |
+| setMaxScale    | value: number                           | void   | Updates `maxScale` value                                                                     |
+| getScale       |                                         | number | Returns current value of sharedValue `scale`                                                 |
 
 You can also refer to the app inside `example/` for a running demo of this library.
+
 ## Contributing
 
 See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.

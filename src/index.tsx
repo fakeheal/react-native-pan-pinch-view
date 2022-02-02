@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import { StyleSheet, View } from 'react-native';
 import {
   Gesture,
@@ -16,16 +16,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { clamp, useVector } from 'react-native-redash';
-import type { PanPinchViewProps } from './types';
+import type { PanPinchViewProps, PanPinchViewRef } from './types';
 
-export default function PanPinchView({
-  containerDimensions = { width: 0, height: 0 },
-  contentDimensions = { width: 0, height: 0 },
-  minScale = 0.5,
-  maxScale = 4,
-  initialScale = 1,
-  children,
-}: PanPinchViewProps) {
+export default forwardRef(function PanPinchView(
+  {
+    containerDimensions = { width: 0, height: 0 },
+    contentDimensions = { width: 0, height: 0 },
+    minScale = 0.5,
+    maxScale = 4,
+    initialScale = 1,
+    children,
+  }: PanPinchViewProps,
+  ref: React.Ref<PanPinchViewRef>
+) {
+  const currentMinScale = useSharedValue(minScale);
+  const currentMaxScale = useSharedValue(maxScale);
+
   const scale = useSharedValue(initialScale);
   const lastScale = useSharedValue(initialScale);
 
@@ -37,7 +43,54 @@ export default function PanPinchView({
   const isPinching = useSharedValue(false);
   const isResetting = useSharedValue(false);
 
-  const layout = useVector(contentDimensions.width, contentDimensions.height);
+  const contentSize = useVector(
+    contentDimensions.width,
+    contentDimensions.height
+  );
+
+  const setContentSize = ({
+    width,
+    height,
+  }: {
+    width: number;
+    height: number;
+  }) => {
+    contentSize.x.value = width;
+    contentSize.y.value = height;
+  };
+
+  const scaleTo = (value: number, animated: boolean) => {
+    scale.value = animated ? withTiming(value) : value;
+    lastScale.value = value;
+  };
+
+  const translateTo = (x: number, y: number, animated: boolean) => {
+    translation.x.value = 0;
+    translation.y.value = 0;
+    offset.x.value = animated ? withTiming(x) : x;
+    offset.y.value = animated ? withTiming(y) : y;
+  };
+
+  const setMinScale = (value: number) => {
+    currentMinScale.value = value;
+  };
+
+  const setMaxScale = (value: number) => {
+    currentMaxScale.value = value;
+  };
+
+  const getScale = (): number => {
+    return scale.value;
+  };
+
+  useImperativeHandle(ref, () => ({
+    scaleTo,
+    setContentSize,
+    translateTo,
+    setMinScale,
+    setMaxScale,
+    getScale,
+  }));
 
   const animatedStyle = useAnimatedStyle(() => {
     const translateX = offset.x.value + translation.x.value;
@@ -46,32 +99,6 @@ export default function PanPinchView({
       transform: [{ translateX }, { translateY }, { scale: scale.value }],
     };
   });
-
-  const animateToInitialState = () => {
-    'worklet';
-
-    isResetting.value = true;
-
-    scale.value = withTiming(initialScale);
-    lastScale.value = withTiming(initialScale);
-
-    translation.x.value = withTiming(0);
-    translation.y.value = withTiming(0);
-
-    offset.x.value = withTiming(0);
-    offset.y.value = withTiming(0);
-
-    adjustedFocal.x.value = withTiming(0);
-    adjustedFocal.y.value = withTiming(0);
-
-    origin.x.value = withTiming(0);
-    origin.y.value = withTiming(0);
-
-    layout.x.value = contentDimensions.width;
-    layout.y.value = contentDimensions.height;
-
-    isPinching.value = false;
-  };
 
   const setAdjustedFocal = ({
     focalX,
@@ -82,28 +109,37 @@ export default function PanPinchView({
   }) => {
     'worklet';
 
-    adjustedFocal.x.value = focalX - (layout.x.value / 2 + offset.x.value);
-    adjustedFocal.y.value = focalY - (layout.y.value / 2 + offset.y.value);
+    adjustedFocal.x.value = focalX - (contentSize.x.value / 2 + offset.x.value);
+    adjustedFocal.y.value = focalY - (contentSize.y.value / 2 + offset.y.value);
   };
 
   const getEdges = () => {
     'worklet';
     const edges = { x: { min: 0, max: 0 }, y: { min: 0, max: 0 } };
 
-    const newWidth = layout.x.value * scale.value;
-    let scaleOffsetX = (newWidth - layout.x.value) / 2;
+    const newWidth = contentSize.x.value * scale.value;
+    let scaleOffsetX = (newWidth - contentSize.x.value) / 2;
+    if (newWidth > containerDimensions.width) {
+      edges.x.min = Math.round(
+        (newWidth - containerDimensions.width) * -1 + scaleOffsetX
+      );
+      edges.x.max = scaleOffsetX;
+    } else {
+      edges.x.min = scaleOffsetX;
+      edges.x.max = containerDimensions.width - newWidth + scaleOffsetX;
+    }
 
-    edges.x.min = Math.round(
-      (newWidth - containerDimensions.width) * -1 + scaleOffsetX
-    );
-    edges.x.max = scaleOffsetX;
-
-    const newHeight = layout.y.value * scale.value;
-    let scaleOffsetY = (newHeight - layout.y.value) / 2;
-    edges.y.min = Math.round(
-      (newHeight - containerDimensions.height) * -1 + scaleOffsetY
-    );
-    edges.y.max = scaleOffsetY;
+    const newHeight = contentSize.y.value * scale.value;
+    let scaleOffsetY = (newHeight - contentSize.y.value) / 2;
+    if (newHeight > containerDimensions.height) {
+      edges.y.min = Math.round(
+        (newHeight - containerDimensions.height) * -1 + scaleOffsetY
+      );
+      edges.y.max = scaleOffsetY;
+    } else {
+      edges.y.min = scaleOffsetY;
+      edges.y.max = containerDimensions.height - newHeight + scaleOffsetY;
+    }
     return edges;
   };
 
@@ -218,16 +254,6 @@ export default function PanPinchView({
 
   const gestures = Gesture.Race(panGesture, pinchGesture);
 
-  useEffect(() => {
-    animateToInitialState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    containerDimensions.width,
-    containerDimensions.height,
-    contentDimensions.width,
-    contentDimensions.height,
-  ]);
-
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={gestures}>
@@ -244,8 +270,8 @@ export default function PanPinchView({
             style={[
               styles.content,
               {
-                width: contentDimensions.width,
-                height: contentDimensions.height,
+                width: contentSize.x.value,
+                height: contentSize.y.value,
               },
               animatedStyle,
             ]}
@@ -256,7 +282,7 @@ export default function PanPinchView({
       </GestureDetector>
     </GestureHandlerRootView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   container: {

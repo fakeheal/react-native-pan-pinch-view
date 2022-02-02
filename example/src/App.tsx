@@ -1,7 +1,16 @@
 import * as React from 'react';
 
-import { Image, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  Image,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  View,
+} from 'react-native';
 import PanPinchView from 'react-native-pan-pinch-view';
+import { useRef } from 'react';
+import type { PanPinchViewRef } from '../../src/types.js';
 
 const CONTENT = {
   width: 150,
@@ -14,11 +23,56 @@ const CONTAINER = {
 };
 
 export default function App() {
+  const panPinchViewRef = useRef<PanPinchViewRef>(null);
+
+  const scaleTo = (value: number) => {
+    panPinchViewRef.current?.scaleTo(value);
+  };
+
+  const moveTo = (x: number, y: number) => {
+    panPinchViewRef.current?.translateTo(x, y);
+  };
+
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar />
+      <View style={styles.controls}>
+        <Button title="Scale to 0.5" onPress={() => scaleTo(0.5)} />
+        <Button title="Scale to 1.5" onPress={() => scaleTo(1.5)} />
+        <Button title="Scale to 2" onPress={() => scaleTo(2)} />
+      </View>
+      <View style={styles.controls}>
+        <Button
+          title="Center"
+          onPress={() =>
+            moveTo(
+              CONTAINER.width / 2 - CONTENT.width / 2,
+              CONTAINER.height / 2 - CONTENT.height / 2
+            )
+          }
+        />
+        <Button
+          title="Bottom Right"
+          onPress={() =>
+            moveTo(
+              CONTAINER.width - CONTENT.width,
+              CONTAINER.height - CONTENT.height
+            )
+          }
+        />
+        <Button
+          title="Bottom Center"
+          onPress={() =>
+            moveTo(
+              CONTAINER.width / 2 - CONTENT.width / 2,
+              CONTAINER.height - CONTENT.height
+            )
+          }
+        />
+      </View>
       <View style={styles.container}>
         <PanPinchView
+          ref={panPinchViewRef}
           minScale={1}
           initialScale={1}
           containerDimensions={{
@@ -44,10 +98,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 1,
-    marginVertical: 80,
+    marginVertical: 50,
   },
   image: {
     width: CONTENT.width,
     height: CONTENT.height,
+  },
+  controls: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
 });

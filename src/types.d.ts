@@ -4,6 +4,7 @@ type Dimensions = {
   width: number;
   height: number;
 };
+
 export type PanPinchViewProps = {
   /**
    * Dimensions of the container holding the zoomable View.
@@ -36,4 +37,13 @@ export type PanPinchViewProps = {
    * @default 1
    */
   initialScale?: number;
+};
+
+export type PanPinchViewRef = {
+  scaleTo: Function;
+  setContentSize: Function;
+  translateTo: Function;
+  setMinScale: Function;
+  setMaxScale: Function;
+  getScale: Function;
 };
