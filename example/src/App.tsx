@@ -36,6 +36,23 @@ export default function App() {
   return (
     <SafeAreaView style={styles.screen}>
       <StatusBar />
+      <View style={styles.container}>
+        <PanPinchView
+          ref={panPinchViewRef}
+          minScale={1}
+          initialScale={1}
+          containerDimensions={{
+            width: CONTAINER.width,
+            height: CONTAINER.height,
+          }}
+          contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
+        >
+          <Image
+            style={[styles.image]}
+            source={require('./assets/photo.jpg')}
+          />
+        </PanPinchView>
+      </View>
       <View style={styles.controls}>
         <Button title="Scale to 0.5" onPress={() => scaleTo(0.5)} />
         <Button title="Scale to 1.5" onPress={() => scaleTo(1.5)} />
@@ -70,23 +87,6 @@ export default function App() {
           }
         />
       </View>
-      <View style={styles.container}>
-        <PanPinchView
-          ref={panPinchViewRef}
-          minScale={1}
-          initialScale={1}
-          containerDimensions={{
-            width: CONTAINER.width,
-            height: CONTAINER.height,
-          }}
-          contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
-        >
-          <Image
-            style={[styles.image]}
-            source={require('./assets/photo.jpg')}
-          />
-        </PanPinchView>
-      </View>
     </SafeAreaView>
   );
 }
@@ -108,5 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginVertical: 20,
   },
 });

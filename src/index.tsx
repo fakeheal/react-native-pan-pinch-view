@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import {
   Gesture,
   GestureDetector,
@@ -42,6 +42,8 @@ export default forwardRef(function PanPinchView(
 
   const isPinching = useSharedValue(false);
   const isResetting = useSharedValue(false);
+
+  const isAndroidPinchActivated = useSharedValue(false);
 
   const contentSize = useVector(
     contentDimensions.width,
@@ -154,7 +156,7 @@ export default forwardRef(function PanPinchView(
 
   const panGesture = Gesture.Pan()
     .averageTouches(true)
-    .onStart(() => {
+    .onBegin(() => {
       'worklet';
       onGestureStart();
     })
@@ -173,6 +175,10 @@ export default forwardRef(function PanPinchView(
 
         onGestureStart();
 
+        if (Platform.OS === 'android') {
+          isAndroidPinchActivated.value = false;
+        }
+
         setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
         origin.x.value = adjustedFocal.x.value;
         origin.y.value = adjustedFocal.y.value;
@@ -183,8 +189,17 @@ export default forwardRef(function PanPinchView(
     .onChange((event) => {
       'worklet';
 
-      if (event.numberOfPointers < 2) {
+      if (event.numberOfPointers !== 2) {
         return;
+      }
+
+      if (!isAndroidPinchActivated.value && Platform.OS === 'android') {
+        setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
+
+        origin.x.value = adjustedFocal.x.value;
+        origin.y.value = adjustedFocal.y.value;
+
+        isAndroidPinchActivated.value = true;
       }
 
       isPinching.value = true;
@@ -252,7 +267,7 @@ export default forwardRef(function PanPinchView(
     }
   );
 
-  const gestures = Gesture.Race(panGesture, pinchGesture);
+  const gestures = Gesture.Simultaneous(panGesture, pinchGesture);
 
   return (
     <GestureHandlerRootView>
