@@ -36,10 +36,4 @@ export type PanPinchViewProps = {
    * @default 1
    */
   initialScale?: number;
-
-  /**
-   * Scale the view based on center of pinching.
-   * @default true
-   */
-  shouldAdjustFocal?: boolean;
 };

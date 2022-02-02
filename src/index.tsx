@@ -24,7 +24,6 @@ export default function PanPinchView({
   minScale = 0.5,
   maxScale = 4,
   initialScale = 1,
-  shouldAdjustFocal = false,
   children,
 }: PanPinchViewProps) {
   const scale = useSharedValue(initialScale);
@@ -44,15 +43,7 @@ export default function PanPinchView({
     const translateX = offset.x.value + translation.x.value;
     const translateY = offset.y.value + translation.y.value;
     return {
-      transform: [
-        { translateX },
-        { translateY },
-        { translateX: -layout.x.value / 2 },
-        { translateY: -layout.y.value / 2 },
-        { scale: scale.value },
-        { translateX: (-layout.x.value / 2) * -1 },
-        { translateY: (-layout.y.value / 2) * -1 },
-      ],
+      transform: [{ translateX }, { translateY }, { scale: scale.value }],
     };
   });
 
@@ -95,34 +86,25 @@ export default function PanPinchView({
     adjustedFocal.y.value = focalY - (layout.y.value / 2 + offset.y.value);
   };
 
-  const getAdjustedTranslation = () => {
-    'worklet';
-    return {
-      x:
-        adjustedFocal.x.value +
-        ((-1 * scale.value) / lastScale.value) * origin.x.value,
-      y:
-        adjustedFocal.y.value +
-        ((-1 * scale.value) / lastScale.value) * origin.y.value,
-    };
-  };
-
   const getEdges = () => {
     'worklet';
-    const pointX =
-      (layout.x.value * scale.value - containerDimensions.width) * -1;
-    const pointY =
-      (layout.y.value * scale.value - containerDimensions.height) * -1;
-    return {
-      x: {
-        min: Math.min(pointX, 0),
-        max: Math.max(0, pointX),
-      },
-      y: {
-        min: Math.min(pointY, 0),
-        max: Math.max(0, pointY),
-      },
-    };
+    const edges = { x: { min: 0, max: 0 }, y: { min: 0, max: 0 } };
+
+    const newWidth = layout.x.value * scale.value;
+    let scaleOffsetX = (newWidth - layout.x.value) / 2;
+
+    edges.x.min = Math.round(
+      (newWidth - containerDimensions.width) * -1 + scaleOffsetX
+    );
+    edges.x.max = scaleOffsetX;
+
+    const newHeight = layout.y.value * scale.value;
+    let scaleOffsetY = (newHeight - layout.y.value) / 2;
+    edges.y.min = Math.round(
+      (newHeight - containerDimensions.height) * -1 + scaleOffsetY
+    );
+    edges.y.max = scaleOffsetY;
+    return edges;
   };
 
   const onGestureStart = () => {
@@ -155,11 +137,9 @@ export default function PanPinchView({
 
         onGestureStart();
 
-        if (shouldAdjustFocal) {
-          setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
-          origin.x.value = adjustedFocal.x.value;
-          origin.y.value = adjustedFocal.y.value;
-        }
+        setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
+        origin.x.value = adjustedFocal.x.value;
+        origin.y.value = adjustedFocal.y.value;
 
         lastScale.value = scale.value;
       }
@@ -174,12 +154,14 @@ export default function PanPinchView({
       isPinching.value = true;
       scale.value = Math.max(scale.value * event.scaleChange, minScale);
 
-      if (shouldAdjustFocal) {
-        setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
-        const adjustedTranslation = getAdjustedTranslation();
-        translation.x.value = adjustedTranslation.x;
-        translation.y.value = adjustedTranslation.y;
-      }
+      setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
+
+      translation.x.value =
+        adjustedFocal.x.value +
+        ((-1 * scale.value) / lastScale.value) * origin.x.value;
+      translation.y.value =
+        adjustedFocal.y.value +
+        ((-1 * scale.value) / lastScale.value) * origin.y.value;
     })
     .onFinalize(() => {
       'worklet';

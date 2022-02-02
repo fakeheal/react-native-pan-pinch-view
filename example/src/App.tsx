@@ -19,7 +19,6 @@ export default function App() {
       <StatusBar />
       <View style={styles.container}>
         <PanPinchView
-          shouldAdjustFocal={true}
           minScale={1}
           initialScale={1}
           containerDimensions={{

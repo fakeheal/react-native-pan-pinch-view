@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
 | minScale            | Number?  | `0.5`                             | Minimum value of scale.                     |
 | maxScale            | Number?  | `4`                               | Maximum value of scale.                     |
 | initialScale        | Number?  | `1`                               | Initial value of scale.                     |
-| shouldAdjustFocal   | Boolean? | `false`                           | Scale the view based on center of pinching. |
+
 
 You can also refer to the app inside `example/` for a running demo of this library.
 ## Contributing
