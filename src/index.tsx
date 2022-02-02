@@ -203,7 +203,10 @@ export default forwardRef(function PanPinchView(
       }
 
       isPinching.value = true;
-      scale.value = Math.max(scale.value * event.scaleChange, minScale);
+      scale.value = Math.max(
+        scale.value * event.scaleChange,
+        currentMinScale.value
+      );
 
       setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
 
@@ -221,8 +224,13 @@ export default forwardRef(function PanPinchView(
 
         lastScale.value = scale.value;
 
-        if (lastScale.value > maxScale || lastScale.value < minScale) {
-          scale.value = withTiming(clamp(scale.value, minScale, maxScale));
+        if (
+          lastScale.value > currentMaxScale.value ||
+          lastScale.value < currentMinScale.value
+        ) {
+          scale.value = withTiming(
+            clamp(scale.value, currentMinScale.value, currentMaxScale.value)
+          );
         }
       }
     });
