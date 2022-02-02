@@ -117,30 +117,29 @@ export default forwardRef(function PanPinchView(
 
   const getEdges = () => {
     'worklet';
-    const edges = { x: { min: 0, max: 0 }, y: { min: 0, max: 0 } };
-
     const newWidth = contentSize.x.value * scale.value;
+    const newHeight = contentSize.y.value * scale.value;
+
     let scaleOffsetX = (newWidth - contentSize.x.value) / 2;
+    let scaleOffsetY = (newHeight - contentSize.y.value) / 2;
+
+    const edges = {
+      x: { min: scaleOffsetX, max: scaleOffsetX },
+      y: { min: scaleOffsetY, max: scaleOffsetY },
+    };
+
     if (newWidth > containerDimensions.width) {
       edges.x.min = Math.round(
         (newWidth - containerDimensions.width) * -1 + scaleOffsetX
       );
       edges.x.max = scaleOffsetX;
-    } else {
-      edges.x.min = scaleOffsetX;
-      edges.x.max = containerDimensions.width - newWidth + scaleOffsetX;
     }
 
-    const newHeight = contentSize.y.value * scale.value;
-    let scaleOffsetY = (newHeight - contentSize.y.value) / 2;
     if (newHeight > containerDimensions.height) {
       edges.y.min = Math.round(
         (newHeight - containerDimensions.height) * -1 + scaleOffsetY
       );
       edges.y.max = scaleOffsetY;
-    } else {
-      edges.y.min = scaleOffsetY;
-      edges.y.max = containerDimensions.height - newHeight + scaleOffsetY;
     }
     return edges;
   };
@@ -163,8 +162,21 @@ export default forwardRef(function PanPinchView(
     .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
       'worklet';
       if (event.numberOfPointers === 1 && !isPinching.value) {
-        translation.x.value = event.translationX;
-        translation.y.value = event.translationY;
+        const edges = getEdges();
+
+        let boundedX = clamp(
+          event.translationX,
+          edges.x.min - offset.x.value,
+          edges.x.max - offset.x.value
+        );
+        let boundedY = clamp(
+          event.translationY,
+          edges.y.min - offset.y.value,
+          edges.y.max - offset.y.value
+        );
+
+        translation.x.value = boundedX;
+        translation.y.value = boundedY;
       }
     });
 
@@ -210,12 +222,23 @@ export default forwardRef(function PanPinchView(
 
       setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
 
-      translation.x.value =
+      const edges = getEdges();
+
+      let boundedX = clamp(
         adjustedFocal.x.value +
-        ((-1 * scale.value) / lastScale.value) * origin.x.value;
-      translation.y.value =
+          ((-1 * scale.value) / lastScale.value) * origin.x.value,
+        edges.x.min - offset.x.value,
+        edges.x.max - offset.x.value
+      );
+      let boundedY = clamp(
         adjustedFocal.y.value +
-        ((-1 * scale.value) / lastScale.value) * origin.y.value;
+          ((-1 * scale.value) / lastScale.value) * origin.y.value,
+        edges.y.min - offset.y.value,
+        edges.y.max - offset.y.value
+      );
+
+      translation.x.value = boundedX;
+      translation.y.value = boundedY;
     })
     .onFinalize(() => {
       'worklet';
@@ -269,8 +292,8 @@ export default forwardRef(function PanPinchView(
           edges.y.max - offset.y.value
         );
 
-        translation.x.value = withTiming(boundedX);
-        translation.y.value = withTiming(boundedY);
+        translation.x.value = boundedX;
+        translation.y.value = boundedY;
       }
     }
   );
