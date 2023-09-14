@@ -1,5 +1,5 @@
-import React, { forwardRef, useImperativeHandle } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
 import {
   Gesture,
   GestureDetector,
@@ -29,13 +29,19 @@ export default forwardRef(function PanPinchView(
   }: PanPinchViewProps,
   ref: React.Ref<PanPinchViewRef>
 ) {
+  const { width, height } = useWindowDimensions();
+  const containerRef = useRef<View>(null);
+  const subscribedToWheelRef = useRef(false);
   const currentMinScale = useSharedValue(minScale);
   const currentMaxScale = useSharedValue(maxScale);
 
   const scale = useSharedValue(initialScale);
   const lastScale = useSharedValue(initialScale);
 
-  const translation = useVector(0, 0);
+  const translation = useVector(
+    width / 2 - contentDimensions.width / 2,
+    height / 2 - contentDimensions.height / 2
+  );
   const adjustedFocal = useVector(0, 0);
   const offset = useVector(0, 0);
   const origin = useVector(0, 0);
@@ -277,10 +283,31 @@ export default forwardRef(function PanPinchView(
 
   const gestures = Gesture.Simultaneous(panGesture, pinchGesture);
 
+  const subscribeToWheelEvents = () => {
+    if (
+      ['ios', 'android'].includes(Platform.OS) &&
+      !subscribedToWheelRef.current
+    ) {
+      if (containerRef.current) {
+        (containerRef.current as unknown as HTMLDivElement).addEventListener(
+          'wheel',
+          (e: WheelEvent) => {
+            let newScale = getScale() + e.deltaY * -0.01;
+            newScale = Math.min(Math.max(minScale, newScale), maxScale);
+            scaleTo(newScale, true);
+          }
+        );
+      }
+      subscribedToWheelRef.current = true;
+    }
+  };
+
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={gestures}>
         <View
+          ref={containerRef}
+          onLayout={subscribeToWheelEvents}
           style={[
             styles.container,
             {
