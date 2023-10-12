@@ -42,6 +42,11 @@ export type PanPinchViewProps = {
    * Callback function called when translation is finished updating.
    */
   onTranslationFinished?: Function;
+
+  /**
+   * Disable the pan and pinch gestures.
+   */
+  disabled?: boolean;
 };
 
 export type PanPinchViewRef = {
