@@ -46,4 +46,5 @@ export type PanPinchViewRef = {
   setMinScale: Function;
   setMaxScale: Function;
   getScale: Function;
+  getTranslation: Function;
 };
