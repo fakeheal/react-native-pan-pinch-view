@@ -62,6 +62,7 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "install-peers": "^1.0.4",
     "jest": "^28.1.1",
     "prettier": "^2.0.5",
     "react": "18.2.0",

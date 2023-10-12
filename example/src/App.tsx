@@ -48,7 +48,9 @@ export default function App() {
             height: CONTAINER.height,
           }}
           contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
-          onTranslationUpdated={(data) => setPosition(JSON.stringify(data))}
+          onTranslationFinished={(data: object) =>
+            setPosition(JSON.stringify(data))
+          }
         >
           <Image style={[styles.image]} source={require('./photo.jpg')} />
         </PanPinchView>

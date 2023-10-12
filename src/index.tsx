@@ -4,10 +4,13 @@ import {
   Gesture,
   GestureDetector,
   GestureHandlerRootView,
+} from 'react-native-gesture-handler';
+import type {
   GestureStateChangeEvent,
   GestureUpdateEvent,
   PanGestureHandlerEventPayload,
   PinchGestureHandlerEventPayload,
+  PinchGestureChangeEventPayload,
 } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedReaction,
@@ -188,37 +191,43 @@ export default forwardRef(function PanPinchView(
         lastScale.value = scale.value;
       }
     )
-    .onChange((event) => {
-      'worklet';
+    .onChange(
+      (
+        event: GestureUpdateEvent<
+          PinchGestureHandlerEventPayload & PinchGestureChangeEventPayload
+        >
+      ) => {
+        'worklet';
 
-      if (event.numberOfPointers !== 2) {
-        return;
-      }
+        if (event.numberOfPointers !== 2) {
+          return;
+        }
 
-      if (!isAndroidPinchActivated.value && Platform.OS === 'android') {
+        if (!isAndroidPinchActivated.value && Platform.OS === 'android') {
+          setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
+
+          origin.x.value = adjustedFocal.x.value;
+          origin.y.value = adjustedFocal.y.value;
+
+          isAndroidPinchActivated.value = true;
+        }
+
+        isPinching.value = true;
+        scale.value = Math.max(
+          scale.value * event.scaleChange,
+          currentMinScale.value
+        );
+
         setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
 
-        origin.x.value = adjustedFocal.x.value;
-        origin.y.value = adjustedFocal.y.value;
-
-        isAndroidPinchActivated.value = true;
+        translation.x.value =
+          adjustedFocal.x.value +
+          ((-1 * scale.value) / lastScale.value) * origin.x.value;
+        translation.y.value =
+          adjustedFocal.y.value +
+          ((-1 * scale.value) / lastScale.value) * origin.y.value;
       }
-
-      isPinching.value = true;
-      scale.value = Math.max(
-        scale.value * event.scaleChange,
-        currentMinScale.value
-      );
-
-      setAdjustedFocal({ focalX: event.focalX, focalY: event.focalY });
-
-      translation.x.value =
-        adjustedFocal.x.value +
-        ((-1 * scale.value) / lastScale.value) * origin.x.value;
-      translation.y.value =
-        adjustedFocal.y.value +
-        ((-1 * scale.value) / lastScale.value) * origin.y.value;
-    })
+    )
     .onFinalize(() => {
       'worklet';
       if (isPinching.value) {
@@ -250,7 +259,7 @@ export default forwardRef(function PanPinchView(
         onTranslationUpdated: onTranslationFinished,
       };
     },
-    (newTransform, previousTransform) => {
+    (newTransform: any, previousTransform: any) => {
       if (previousTransform !== null) {
         if (isPinching.value) {
           return;
@@ -285,6 +294,7 @@ export default forwardRef(function PanPinchView(
             clampedY = true;
           }
 
+          // @ts-ignore
           runOnJS(onTranslationFinished)({
             x: boundedX,
             y: boundedY,

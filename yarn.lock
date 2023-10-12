@@ -3424,9 +3424,9 @@ __metadata:
   linkType: hard
 
 "@react-native/normalize-colors@npm:*":
-  version: 0.74.0
-  resolution: "@react-native/normalize-colors@npm:0.74.0"
-  checksum: f009dbeb3b31184494af4e8497a808d2ff1692be44aa105a704bdd072f62ae28f2b53c0c58e0e1d4baac4a88d5dc73512308733aa10fa5ffc2674f392e98024d
+  version: 0.74.1
+  resolution: "@react-native/normalize-colors@npm:0.74.1"
+  checksum: a8625a2ed4f2595c9e1a0b0877ca8ab02dab243ced6bf98c82c328c2c125ca31dd3afd1f2940f2c114af2c309b28ad24da98aa9519a761a2df796c6968c055ec
   languageName: node
   linkType: hard
 
@@ -8123,6 +8123,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"executioner@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "executioner@npm:2.0.1"
+  dependencies:
+    mixly: ^1.0.0
+  checksum: 2de2cec06240c8f574f13c550cc7dfeeeb06005a2d71dab7cc84a97e3e2bb456c9aaccf36db2865bcb231447d29f6bab29d1310d8fa3fd86e0a0449ec75b72f0
+  languageName: node
+  linkType: hard
+
 "exit@npm:^0.1.2":
   version: 0.1.2
   resolution: "exit@npm:0.1.2"
@@ -8845,6 +8854,13 @@ __metadata:
   dependencies:
     node-gyp: latest
   conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"fulcon@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "fulcon@npm:1.0.2"
+  checksum: 212a4b4d699601b91c3980bd41ff1a320dd36d9a61465d333bc3ea41d62109328f51d21a81f6cff5ba952b1dd259198502fb6bfd4a9460c515511e6ff5ce73f3
   languageName: node
   linkType: hard
 
@@ -9928,6 +9944,15 @@ __metadata:
     through: ^2.3.6
     wrap-ansi: ^6.0.1
   checksum: caf3e9da66a0b3809952e8425a36435afccba8fdfeea4c9d42ce362d465b72f22a201f37a1badf52dd355c6054e5e6f073d45258fec477238dba13d24a6e77d6
+  languageName: node
+  linkType: hard
+
+"install-peers@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "install-peers@npm:1.0.4"
+  dependencies:
+    executioner: ^2.0.1
+  checksum: 6cb7e34c7be284c61aa877abf81d2ff20469a38fc7b965b32f4c8f8143de165ee56a9f673fd32ed722f1aeccbd846057a1bbcf4630e974bd463d5c94dd2a0abe
   languageName: node
   linkType: hard
 
@@ -12814,6 +12839,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mixly@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "mixly@npm:1.0.0"
+  dependencies:
+    fulcon: ^1.0.1
+  checksum: 9cf488349f6f7ac8ba6a167cc87fb6f39c7341068a606524906176e2cc2f0677582bf6de3b92ef7b1701902e7f38530f9acbfc66ee450d97abe4132e18ce603a
+  languageName: node
+  linkType: hard
+
 "mkdirp@npm:^0.5.1, mkdirp@npm:~0.5.1":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
@@ -14838,6 +14872,7 @@ __metadata:
     eslint: ^8.4.1
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.0.0
+    install-peers: ^1.0.4
     jest: ^28.1.1
     prettier: ^2.0.5
     react: 18.2.0
