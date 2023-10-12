@@ -1,113 +1,31 @@
 import * as React from 'react';
 
-import {
-  Button,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
-import PanPinchView from 'react-native-pan-pinch-view';
-import { useRef } from 'react';
-import type { PanPinchViewRef } from '../../src/types.js';
-
-const CONTENT = {
-  width: 150,
-  height: 100,
-};
-
-const CONTAINER = {
-  width: 300,
-  height: 300,
-};
+import { StyleSheet, View, Text } from 'react-native';
+import { multiply } from 'react-native-pan-pinch-view';
 
 export default function App() {
-  const panPinchViewRef = useRef<PanPinchViewRef>(null);
+  const [result, setResult] = React.useState<number | undefined>();
 
-  const scaleTo = (value: number) => {
-    panPinchViewRef.current?.scaleTo(value);
-  };
-
-  const moveTo = (x: number, y: number) => {
-    panPinchViewRef.current?.translateTo(x, y);
-  };
+  React.useEffect(() => {
+    multiply(3, 7).then(setResult);
+  }, []);
 
   return (
-    <SafeAreaView style={styles.screen}>
-      <StatusBar />
-      <View style={styles.container}>
-        <PanPinchView
-          ref={panPinchViewRef}
-          minScale={1}
-          initialScale={1}
-          containerDimensions={{
-            width: CONTAINER.width,
-            height: CONTAINER.height,
-          }}
-          contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
-        >
-          <Image
-            style={[styles.image]}
-            source={require('./assets/photo.jpg')}
-          />
-        </PanPinchView>
-      </View>
-      <View style={styles.controls}>
-        <Button title="Scale to 0.5" onPress={() => scaleTo(0.5)} />
-        <Button title="Scale to 1.5" onPress={() => scaleTo(1.5)} />
-        <Button title="Scale to 2" onPress={() => scaleTo(2)} />
-      </View>
-      <View style={styles.controls}>
-        <Button
-          title="Center"
-          onPress={() =>
-            moveTo(
-              CONTAINER.width / 2 - CONTENT.width / 2,
-              CONTAINER.height / 2 - CONTENT.height / 2
-            )
-          }
-        />
-        <Button
-          title="Bottom Right"
-          onPress={() =>
-            moveTo(
-              CONTAINER.width - CONTENT.width,
-              CONTAINER.height - CONTENT.height
-            )
-          }
-        />
-        <Button
-          title="Bottom Center"
-          onPress={() =>
-            moveTo(
-              CONTAINER.width / 2 - CONTENT.width / 2,
-              CONTAINER.height - CONTENT.height
-            )
-          }
-        />
-      </View>
-    </SafeAreaView>
+    <View style={styles.container}>
+      <Text>Result: {result}</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#fff' },
   container: {
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
-    alignSelf: 'center',
-    borderWidth: 1,
-    marginVertical: 50,
-  },
-  image: {
-    width: CONTENT.width,
-    height: CONTENT.height,
-  },
-  controls: {
     justifyContent: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  },
+  box: {
+    width: 60,
+    height: 60,
     marginVertical: 20,
   },
 });

@@ -1,23 +1,26 @@
 {
   "name": "react-native-pan-pinch-view-example",
-  "description": "Example app for react-native-pan-pinch-view",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
-    "start": "react-native start"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
-    "react-native": "0.63.4",
-    "react-native-gesture-handler": "^2.2.0",
-    "react-native-reanimated": "^2.3.1",
-    "react-native-redash": "^16.2.3"
+    "expo": "~49.0.13",
+    "expo-status-bar": "~1.6.0",
+    "react": "18.2.0",
+    "react-native": "0.72.5",
+    "react-dom": "18.2.0",
+    "react-native-web": "~0.19.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/runtime": "^7.12.5",
-    "babel-plugin-module-resolver": "^4.0.0",
-    "metro-react-native-babel-preset": "^0.64.0"
-  }
+    "@babel/core": "^7.20.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "@expo/webpack-config": "^18.0.1",
+    "babel-loader": "^8.1.0"
+  },
+  "private": true
 }
