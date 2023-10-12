@@ -7,9 +7,10 @@ import {
   StatusBar,
   StyleSheet,
   View,
+  Text,
 } from 'react-native';
 import PanPinchView from 'react-native-pan-pinch-view';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import type { PanPinchViewRef } from '../../src/types.js';
 
 const CONTENT = {
@@ -24,6 +25,7 @@ const CONTAINER = {
 
 export default function App() {
   const panPinchViewRef = useRef<PanPinchViewRef>(null);
+  const [position, setPosition] = useState<string>('Start moving the image...');
 
   const scaleTo = (value: number) => {
     panPinchViewRef.current?.scaleTo(value);
@@ -46,6 +48,7 @@ export default function App() {
             height: CONTAINER.height,
           }}
           contentDimensions={{ width: CONTENT.width, height: CONTENT.height }}
+          onTranslationUpdated={(data) => setPosition(JSON.stringify(data))}
         >
           <Image style={[styles.image]} source={require('./photo.jpg')} />
         </PanPinchView>
@@ -84,13 +87,9 @@ export default function App() {
           }
         />
       </View>
-
-      <Button
-        title="Get Position"
-        onPress={() =>
-          alert(JSON.stringify(panPinchViewRef.current?.getTranslation()))
-        }
-      />
+      <View style={styles.controls}>
+        <Text>{position}</Text>
+      </View>
     </SafeAreaView>
   );
 }

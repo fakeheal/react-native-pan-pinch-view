@@ -14,6 +14,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  runOnJS,
 } from 'react-native-reanimated';
 import type { PanPinchViewProps, PanPinchViewRef } from './types';
 import { clamp, useVector } from './math';
@@ -25,6 +26,7 @@ export default forwardRef(function PanPinchView(
     minScale = 0.5,
     maxScale = 4,
     initialScale = 1,
+    onTranslationFinished = undefined,
     children,
   }: PanPinchViewProps,
   ref: React.Ref<PanPinchViewRef>
@@ -85,15 +87,6 @@ export default forwardRef(function PanPinchView(
     return scale.value;
   };
 
-  const getTranslation = (): { x: number; y: number } => {
-    const x = offset.x.value + translation.x.value;
-    const y = offset.y.value + translation.y.value;
-    return {
-      x,
-      y,
-    };
-  };
-
   useImperativeHandle(ref, () => ({
     scaleTo,
     setContentSize,
@@ -101,7 +94,6 @@ export default forwardRef(function PanPinchView(
     setMinScale,
     setMaxScale,
     getScale,
-    getTranslation,
   }));
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -255,6 +247,7 @@ export default forwardRef(function PanPinchView(
         isPinching: isPinching.value,
         offsetX: offset.x.value,
         offsetY: offset.y.value,
+        onTranslationUpdated: onTranslationFinished,
       };
     },
     (newTransform, previousTransform) => {
@@ -279,6 +272,26 @@ export default forwardRef(function PanPinchView(
           edges.y.min - offset.y.value,
           edges.y.max - offset.y.value
         );
+
+        // notify about translation changes, if required
+        if (onTranslationFinished) {
+          let clampedX = false;
+          let clampedY = false;
+          if (boundedX !== newTransform.translationX) {
+            clampedX = true;
+          }
+
+          if (boundedY !== newTransform.translationY) {
+            clampedY = true;
+          }
+
+          runOnJS(onTranslationFinished)({
+            x: boundedX,
+            y: boundedY,
+            clampedX,
+            clampedY,
+          });
+        }
 
         translation.x.value = withTiming(boundedX);
         translation.y.value = withTiming(boundedY);

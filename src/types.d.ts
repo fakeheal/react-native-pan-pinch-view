@@ -37,6 +37,11 @@ export type PanPinchViewProps = {
    * @default 1
    */
   initialScale?: number;
+
+  /**
+   * Callback function called when translation is finished updating.
+   */
+  onTranslationFinished?: Function;
 };
 
 export type PanPinchViewRef = {
@@ -46,5 +51,4 @@ export type PanPinchViewRef = {
   setMinScale: Function;
   setMaxScale: Function;
   getScale: Function;
-  getTranslation: Function;
 };

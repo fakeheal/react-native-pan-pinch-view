@@ -87,13 +87,14 @@ const styles = StyleSheet.create({
 
 ## ⚪ Props
 
-| Property            | Type     | Default                           | Description                                 |
-|---------------------|----------|-----------------------------------|---------------------------------------------|
-| containerDimensions | Object   | `{width: number, height:number}`  | Width and height of the viewable area.      |
-| contentDimensions   | Object   | `{width: number, height:number}`  | Width and height of the zoomable view.      |
-| minScale            | Number?  | `0.5`                             | Minimum value of scale.                     |
-| maxScale            | Number?  | `4`                               | Maximum value of scale.                     |
-| initialScale        | Number?  | `1`                               | Initial value of scale.                     |
+| Property              | Type      | Default                          | Description                                                                                                        |
+|-----------------------|-----------|----------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| containerDimensions   | Object    | `{width: number, height:number}` | Width and height of the viewable area.                                                                             |
+| contentDimensions     | Object    | `{width: number, height:number}` | Width and height of the zoomable view.                                                                             |
+| minScale              | Number?   | `0.5`                            | Minimum value of scale.                                                                                            |
+| maxScale              | Number?   | `4`                              | Maximum value of scale.                                                                                            |
+| initialScale          | Number?   | `1`                              | Initial value of scale.                                                                                            |
+| onTranslationFinished | Function? | `undefined`                      | Function to be called on the JS thread with an object containing current position and whether it was clamped (X/Y) |
 
 ## 🛠 Methods
 
@@ -105,7 +106,6 @@ const styles = StyleSheet.create({
 | setMinScale    | value: number                           | void   | Updates `minScale` value                                                                     |
 | setMaxScale    | value: number                           | void   | Updates `maxScale` value                                                                     |
 | getScale       |                                         | number | Returns current value of sharedValue `scale`                                                 |
-| getTranslation |                                         | number | Returns current value of the positioning shared values `offset` + `translation`               |
 
 You can also refer to the app inside `example/` for a running demo of this library.
 
