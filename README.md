@@ -32,8 +32,8 @@ This library uses `react-native-reanimated` v3 and the latest API of `react-nati
 
 Before installing it, you need to install those two libraries and set them up in your project:
 
-- `react-native-reanimated`: [installation & setup](https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/installation)
-- `react-native-gesture-handler`: [installation & setup](https://docs.swmansion.com/react-native-gesture-handler/docs/#installation)
+- `react-native-reanimated@3.3.0`: [installation & setup](https://docs.swmansion.com/react-native-reanimated/)
+- `react-native-gesture-handler@2.13.2`: [installation & setup](https://docs.swmansion.com/react-native-gesture-handler/docs/#installation)
 
 ## ⚙️ Installation
 
