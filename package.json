@@ -68,6 +68,8 @@
     "react": "18.2.0",
     "react-native": "0.72.5",
     "react-native-builder-bob": "^0.20.0",
+    "react-native-gesture-handler": "^2.x",
+    "react-native-reanimated": "^3.x",
     "release-it": "^15.0.0",
     "typescript": "^5.0.2"
   },
@@ -76,9 +78,7 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*",
-    "react-native-gesture-handler": "^2.x",
-    "react-native-reanimated": "^3.x"
+    "react-native": "*"
   },
   "workspaces": [
     "example"
