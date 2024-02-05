@@ -78,7 +78,9 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-gesture-handler": "^2.x",
+    "react-native-reanimated": "^3.x"
   },
   "workspaces": [
     "example"
