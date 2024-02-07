@@ -30,6 +30,7 @@ export default forwardRef(function PanPinchView(
     maxScale = 4,
     initialScale = 1,
     onTranslationFinished = undefined,
+    disabled = undefined,
     children,
   }: PanPinchViewProps,
   ref: React.Ref<PanPinchViewRef>
@@ -160,6 +161,7 @@ export default forwardRef(function PanPinchView(
   };
 
   const panGesture = Gesture.Pan()
+    .enabled(!disabled)
     .averageTouches(true)
     .onBegin(() => {
       'worklet';
@@ -174,6 +176,7 @@ export default forwardRef(function PanPinchView(
     });
 
   const pinchGesture = Gesture.Pinch()
+    .enabled(!disabled)
     .onBegin(
       (event: GestureStateChangeEvent<PinchGestureHandlerEventPayload>) => {
         'worklet';
