@@ -300,6 +300,9 @@ export default forwardRef(function PanPinchView(
             y: boundedY,
             clampedX,
             clampedY,
+            scale: scale.value,
+            translateX: offset.x.value + translation.x.value,
+            translateY: offset.y.value + translation.y.value,
           });
         }
 
